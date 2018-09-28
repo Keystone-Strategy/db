@@ -1,0 +1,24 @@
+{
+  "name": "migrate",
+  "version": "1.0.0",
+  "description": "Library to create and run migration scripts for Mongo DBs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Keystone-Strategy/migrate.git"
+  },
+  "keywords": [
+    "migrate",
+    "mongodb",
+    "database"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Keystone-Strategy/migrate/issues"
+  },
+  "homepage": "https://github.com/Keystone-Strategy/migrate#readme"
+}
