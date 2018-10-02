@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const _ = require('lodash')
+const chalk = require('chalk')
+const { serverMigrationPath, createMigrationsDirectory, Migration } = require('..')
+
+const execute = async () => {
+  const migrations = await Migration.find({})
+  const migrationNames = _.map(migrations, 'name')
+  const pendingMigrationFileNames = fetchPendingMigrations(migrationNames)
+  if(pendingMigrationFileNames.length == 0) {
+    console.log('No pending migrations to run.')
+    process.exit(0)
+  }
+
+  console.log("Running migrations: \n", chalk.blue(pendingMigrationFileNames.join("\n ")))
+
+  await pendingMigrationFileNames.reduce(
+    (acc, migrationName) => acc.then(() => runMigration(migrationName)),
+    Promise.resolve()
+  )
+
+  console.log("Finished running migrations.")
+  process.exit(0)
+}
+
+const runMigration = async migrationName => {
+  try {
+    await require(`${serverMigrationPath()}/${migrationName}`).up()
+    return new Migration({ name: migrationName }).save()
+  }
+  catch(err) {
+    handleError(migrationName)(err)
+  }
+}
+
+const fetchPendingMigrations = (migrationNames) => {
+  const migrationFileNames = fs.readdirSync(serverMigrationPath())
+  return _.reject(migrationFileNames, name => _.includes(migrationNames, name))
+}
+
+const handleError = migrationName => err => {
+  const message = 'Error when running migration ' +
+    `"${migrationName}": ${err.message}`
+  console.error(chalk.red(message))
+  process.exit(1)
+}
+
+createMigrationsDirectory()
+execute()

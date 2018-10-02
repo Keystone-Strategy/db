@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+'use strict'
+
+const fs = require('fs')
+const moment = require('moment')
+const chalk = require('chalk')
+
+const { serverMigrationPath, createMigrationsDirectory } = require('..')
+
+createMigrationsDirectory()
+
+const migrationName = process.argv[2];
+if(!migrationName) throw new Error('Please specify a migration name.')
+
+const unixTimeStamp = moment().valueOf()
+const template = fs.readFileSync('./template.js', 'utf-8')
+const path = `${serverMigrationPath()}/${unixTimeStamp}-${migrationName}.js`
+fs.writeFileSync(path, template)
+console.log(`Created migration at: ${chalk.green(path)}`)
+process.exit(0)

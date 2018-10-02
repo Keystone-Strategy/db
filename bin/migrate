@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const commander = require('commander')
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+
+commander
+  .version('0.1.0')
+  .command('create <name>', 'Create a migration')
+  .command('run', 'Run migrations', { isDefault: true })
+  .command('rerun', 'Rerun the last migration')
+  .parse(process.argv)

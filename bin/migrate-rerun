@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk')
+const { serverMigrationPath, Migration } = require('..')
+
+const execute = async () => {
+  const lastMigration = await Migration.findMostRecent()
+  if (!lastMigration) {
+    console.error(chalk.red('Error: Cannot rerun migration. No migrations have been run.'))
+    process.exit(1)
+  }
+  const migrationFilePath = `${serverMigrationPath()}/${lastMigration.name}`
+  console.log("Running migration: \n", chalk.blue(migrationFilePath));
+
+  try {
+    await require(migrationFilePath).up()
+    process.exit(0)
+  } catch (err) {
+    handleError(lastMigration.name)(err)
+  }
+}
+
+const handleError = migrationName => err => {
+  const message = 'Error when running migration ' +
+    `"${migrationName}": ${err.message}`
+  console.error(chalk.red(message))
+  process.exit(1)
+}
+
+execute()
