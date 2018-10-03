@@ -19,7 +19,6 @@ describe('bin/migrate', function () {
 
   beforeEach(() => {
     process.env.MONGODB_URI = MONGODB_URI
-    process.env.SERVER_MIGRATION_PATH = `${__dirname}/test-migrations`
     execSync(`mkdir -p ${serverMigrationPath()}`)
   })
 
@@ -31,7 +30,6 @@ describe('bin/migrate', function () {
   afterAll(() => {
     mongod.stop()
     delete process.env.MONGODB_URI
-    delete process.env.SERVER_MIGRATION_PATH
   })
 
   describe('create', function () {
@@ -193,7 +191,7 @@ const deleteMigrationsDirectory = () => {
 }
 
 const buildTodoRequire = () => {
-  return 'const Todo = require("../../mocks/todo.model")'
+  return 'const Todo = require("../mocks/todo.model")'
 }
 
 const executeCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)

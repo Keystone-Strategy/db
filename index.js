@@ -1,10 +1,10 @@
 'use strict'
 
 const fs = require('fs')
+const path = require("path")
 const Migration = require('./migration.model')
 
-// determinate default value
-const serverMigrationPath = () => process.env.SERVER_MIGRATION_PATH || `${__dirname}/migrations`
+const serverMigrationPath = () => process.env.SERVER_MIGRATION_PATH || path.resolve('./migrations')
 
 const createMigrationsDirectory = () => {
   if (!fs.existsSync(serverMigrationPath())) {
