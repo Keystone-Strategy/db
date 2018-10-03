@@ -4,7 +4,7 @@
   "description": "Library to create and run migration scripts for Mongo DBs",
   "main": "index.js",
   "scripts": {
-    "test": "MONGODB_URI=mongodb://localhost:27017/test jest --config=jest.json",
+    "test": "MONGODB_URI=mongodb://localhost:27017/test jest",
     "pretest": "docker run --rm -p 27017:27017 --name migrate_test -d mongo:3.4.10 --smallfiles && sleep 5s",
     "posttest": "docker stop migrate_test"
   },
