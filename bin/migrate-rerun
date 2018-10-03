@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 const chalk = require('chalk')
+const { connectToDB, disconnectFromDB } = require('../dbUtils')
 const { serverMigrationPath, Migration } = require('..')
 
 const execute = async () => {
+  connectToDB()
   const lastMigration = await Migration.findMostRecent()
   if (!lastMigration) {
     console.error(chalk.red('Error: Cannot rerun migration. No migrations have been run.'))
@@ -14,6 +16,7 @@ const execute = async () => {
 
   try {
     await require(migrationFilePath).up()
+    disconnectFromDB()
     process.exit(0)
   } catch (err) {
     handleError(lastMigration.name)(err)

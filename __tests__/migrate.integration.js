@@ -1,21 +1,24 @@
-const fs = require('fs')
-const childProcess = require('child_process')
 const _ = require('lodash')
+const fs = require('fs')
+const mongoose = require('mongoose')
+const childProcess = require('child_process')
 const moment = require('moment')
+const MongodbMemoryServer = require('mongodb-memory-server').default
 const Todo = require('../mocks/todo.model')
 const { Migration, serverMigrationPath } = require('..')
 
-const execSync = command => {
-  const options = { env: process.env, encoding: 'utf-8' }
-  return childProcess.execSync(command, options)
-}
-
 describe('bin/migrate', function () {
-  beforeAll(() => {
-    process.env.SERVER_MIGRATION_PATH = `${__dirname}/test-migrations`
+  let mongod
+  let MONGODB_URI
+  beforeAll(async () => {
+    mongod = new MongodbMemoryServer()
+    MONGODB_URI = await mongod.getConnectionString()
+    return mongoose.connect(MONGODB_URI,  { useNewUrlParser: true })
   })
 
   beforeEach(() => {
+    process.env.MONGODB_URI = MONGODB_URI
+    process.env.SERVER_MIGRATION_PATH = `${__dirname}/test-migrations`
     execSync(`mkdir -p ${serverMigrationPath()}`)
   })
 
@@ -25,10 +28,9 @@ describe('bin/migrate', function () {
   })
 
   afterAll(() => {
+    mongod.stop()
+    delete process.env.MONGODB_URI
     delete process.env.SERVER_MIGRATION_PATH
-    return mongoose.connection.close(() => {
-      console.log('Mongoose connection disconnected');
-    })
   })
 
   describe('create', function () {
@@ -50,6 +52,19 @@ describe('bin/migrate', function () {
   })
 
   describe('run', function () {
+    it ('display and error when not DB connection is specified', () => {
+      delete process.env.MONGODB_URI
+
+      createMigration({
+        dependencies: [buildTodoRequire()],
+        async up () {}
+      })
+
+      expect(
+        () => runMigrations()
+      ).toThrowError('Error: not DB connection specified. Use MONGODB_URI env variable.')
+    })
+
     it('runs migrations sequentially', async function () {
       await createTodo()
       const firstMigrationName = 'first migration'
@@ -153,37 +168,42 @@ describe('bin/migrate', function () {
       ).toThrowError('Error: Cannot rerun migration. No migrations have been run.')
     })
   })
-
-  const createMigration = (args = {}) => {
-    const { up, dependencies = [] } = args
-    const migrationName = buildMigrationName()
-    const template = fs.readFileSync('./mocks/test-template')
-    const compile = _.template(template)
-    fs.writeFileSync(migrationName, compile({ up, dependencies }))
-  }
-
-  const buildMigrationName = () => {
-    const migrationName = _.uniqueId('some-migration-')
-    const unixTimeStamp = moment().valueOf()
-    return `${serverMigrationPath()}/${unixTimeStamp}-${migrationName}.js`
-  }
-
-  const deleteMigrationsDirectory = () => {
-    return execSync(`rm -rf ${serverMigrationPath()}`)
-  }
-
-  const buildTodoRequire = () => {
-    return 'const Todo = require("../../mocks/todo.model")'
-  }
-
-  const runCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)
-
-  const runMigrations = () => execSync('bin/migrate run')
-
-  const rerunMigrations = () => execSync('bin/migrate rerun')
-
-  const createTodo = (name = 'initialName') => {
-    const todo = new Todo({ name })
-    return todo.save()
-  }
 })
+
+const createMigration = (args = {}) => {
+  const { up, dependencies = [] } = args
+  const migrationName = buildMigrationName()
+  const template = fs.readFileSync('./mocks/test-template')
+  const compile = _.template(template)
+  fs.writeFileSync(migrationName, compile({ up, dependencies }))
+}
+
+const buildMigrationName = () => {
+  const migrationName = _.uniqueId('some-migration-')
+  const unixTimeStamp = moment().valueOf()
+  return `${serverMigrationPath()}/${unixTimeStamp}-${migrationName}.js`
+}
+
+const deleteMigrationsDirectory = () => {
+  return execSync(`rm -rf ${serverMigrationPath()}`)
+}
+
+const buildTodoRequire = () => {
+  return 'const Todo = require("../../mocks/todo.model")'
+}
+
+const runCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)
+
+const runMigrations = () => execSync('bin/migrate run')
+
+const rerunMigrations = () => execSync('bin/migrate rerun')
+
+const createTodo = (name = 'initialName') => {
+  const todo = new Todo({ name })
+  return todo.save()
+}
+
+const execSync = command => {
+  const options = { env: process.env, encoding: 'utf-8' }
+  return childProcess.execSync(command, options)
+}

@@ -3,9 +3,11 @@
 const fs = require('fs')
 const _ = require('lodash')
 const chalk = require('chalk')
+const { connectToDB, disconnectFromDB } = require('../dbUtils')
 const { serverMigrationPath, createMigrationsDirectory, Migration } = require('..')
 
 const execute = async () => {
+  connectToDB()
   const migrations = await Migration.find({})
   const migrationNames = _.map(migrations, 'name')
   const pendingMigrationFileNames = fetchPendingMigrations(migrationNames)
@@ -20,6 +22,8 @@ const execute = async () => {
     (acc, migrationName) => acc.then(() => runMigration(migrationName)),
     Promise.resolve()
   )
+
+  disconnectFromDB()
 
   console.log("Finished running migrations.")
   process.exit(0)
