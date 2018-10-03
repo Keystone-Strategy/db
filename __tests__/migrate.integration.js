@@ -11,17 +11,24 @@ const execSync = command => {
 }
 
 describe('bin/migrate', function () {
+  beforeAll(() => {
+    process.env.SERVER_MIGRATION_PATH = `${__dirname}/test-migrations`
+  })
 
   beforeEach(() => {
-    process.env.SERVER_MIGRATION_PATH = `${__dirname}/test-migrations`
-    deleteMigrationsDirectory()
     execSync(`mkdir -p ${serverMigrationPath()}`)
   })
 
   afterEach(async () => {
     deleteMigrationsDirectory()
-    await Todo.deleteMany()
+    await Promise.all([Todo.deleteMany(), Migration.deleteMany()])
+  })
+
+  afterAll(() => {
     delete process.env.SERVER_MIGRATION_PATH
+    return mongoose.connection.close(() => {
+      console.log('Mongoose connection disconnected');
+    })
   })
 
   describe('create', function () {
@@ -102,8 +109,6 @@ describe('bin/migrate', function () {
     })
 
     it("doesn't run migrations that have errors", async function () {
-      // handle this clean up on an before each hook
-      await Migration.deleteMany()
       createMigration({
         async up () {
           throw new Error('Testing, 1, 2, 3')
