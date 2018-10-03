@@ -13,6 +13,7 @@ describe('bin/migrate', function () {
   beforeAll(async () => {
     mongod = new MongodbMemoryServer()
     MONGODB_URI = await mongod.getConnectionString()
+    console.log(MONGODB_URI)
     return mongoose.connect(MONGODB_URI,  { useNewUrlParser: true })
   })
 
@@ -37,7 +38,7 @@ describe('bin/migrate', function () {
     it('creates a file with the provided name and unix timestamp', function () {
       const migrationName = 'some-migration'
 
-      runCreateMigration(migrationName)
+      executeCreateMigration(migrationName)
       const results = fs.readdirSync(serverMigrationPath())
 
       expect(results.length).toBe(1)
@@ -52,17 +53,20 @@ describe('bin/migrate', function () {
   })
 
   describe('run', function () {
-    it ('display and error when not DB connection is specified', () => {
+    it('displays an error when not DB connection is specified', () => {
       delete process.env.MONGODB_URI
 
-      createMigration({
-        dependencies: [buildTodoRequire()],
-        async up () {}
-      })
+      expect(
+        () => executeRunMigrations()
+      ).toThrowError('Error: not DB connection specified. Use MONGODB_URI env variable.')
+    })
+
+    it('displays an error when not able to connect to DB', () => {
+      process.env.MONGODB_URI = 'mongodb://127.0.0.1:49806/not-existing-db'
 
       expect(
-        () => runMigrations()
-      ).toThrowError('Error: not DB connection specified. Use MONGODB_URI env variable.')
+        () => executeRunMigrations()
+      ).toThrowError('MongoDB connection error')
     })
 
     it('runs migrations sequentially', async function () {
@@ -90,7 +94,7 @@ describe('bin/migrate', function () {
         }
       })
 
-      runMigrations()
+      executeRunMigrations()
 
       await expect(Todo.findOne()).resolves.toHaveProperty('name', firstMigrationName + secondMigrationName)
     })
@@ -110,8 +114,8 @@ describe('bin/migrate', function () {
         }
       })
 
-      runMigrations()
-      runMigrations()
+      executeRunMigrations()
+      executeRunMigrations()
 
       await expect(Todo.findOne()).resolves.toHaveProperty('name', initialName + ' migration')
     })
@@ -150,13 +154,13 @@ describe('bin/migrate', function () {
         }
       })
 
-      runMigrations()
+      executeRunMigrations()
 
       await Todo.updateOne({ _id: todo._id }, { $set: { name: nameSetBySpec } })
       const todoAfterMigration = await Todo.findOne()
       expect(todoAfterMigration.name).toBe(nameSetBySpec)
 
-      rerunMigrations()
+      executeRerunMigrations()
 
       await expect(Todo.findOne()).resolves.toHaveProperty('name', 'Name set by migration')
     })
@@ -192,11 +196,11 @@ const buildTodoRequire = () => {
   return 'const Todo = require("../../mocks/todo.model")'
 }
 
-const runCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)
+const executeCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)
 
-const runMigrations = () => execSync('bin/migrate run')
+const executeRunMigrations = () => execSync('bin/migrate run')
 
-const rerunMigrations = () => execSync('bin/migrate rerun')
+const executeRerunMigrations = () => execSync('bin/migrate rerun')
 
 const createTodo = (name = 'initialName') => {
   const todo = new Todo({ name })
