@@ -11,7 +11,7 @@ Database connection where migrations will be executed and saved.
 
 `SERVER_MIGRATION_PATH`
 
-A folder path to save the migration scripts.If this variable is not specified it will create a `migrations` folder in the
+A folder path where migrations will be saved.If this variable is not specified it will create a `migrations` folder in the
 root path of the project.
 
 ## commands
