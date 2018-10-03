@@ -1,9 +1,9 @@
 # migrate
 NPM package for automated Mongoose migrations. 
-This package provide three commands for the creation and execution of migrations scripts. 
+Provide commands for the creation and execution of migrations scripts. 
 
 ## Configuration
-Configurations are set throught enviroment variables.
+Configurations are set through enviroment variables.
 
 `MONGODB_URI`
 
