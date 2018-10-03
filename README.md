@@ -18,7 +18,7 @@ root path of the project.
 
 `yarn migrate create <<migration-name>>`
 
-Create a new migration file in the folder specified by `SERVER_MIGRATION_PATH`. it requires a <<migration-name>>.
+Create a new migration file in the folder specified by `SERVER_MIGRATION_PATH`. it requires a `<<migration-name>>`.
 
 `yarn run`
 
