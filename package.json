@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "bin": {
-    "bin": "./bin/migrate"
+    "migrate": "./bin/migrate"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
+    "dotenv": "^6.0.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mongoose": "^5.3.0"

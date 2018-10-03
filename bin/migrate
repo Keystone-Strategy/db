@@ -2,6 +2,8 @@
 
 const commander = require('commander')
 
+require('dotenv').config()
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 commander

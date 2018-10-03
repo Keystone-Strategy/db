@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require("path")
 const Migration = require('./migration.model')
 
-const serverMigrationPath = () => process.env.SERVER_MIGRATION_PATH || path.resolve('./migrations')
+const serverMigrationPath = () => path.resolve(process.env.SERVER_MIGRATION_PATH || './migrations')
 
 const createMigrationsDirectory = () => {
   if (!fs.existsSync(serverMigrationPath())) {

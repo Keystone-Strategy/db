@@ -14,7 +14,7 @@ const migrationName = process.argv[2];
 if(!migrationName) throw new Error('Please specify a migration name.')
 
 const unixTimeStamp = moment().valueOf()
-const template = fs.readFileSync('./template.js', 'utf-8')
+const template = fs.readFileSync(`${__dirname}/../template.js`, 'utf-8')
 const path = `${serverMigrationPath()}/${unixTimeStamp}-${migrationName}.js`
 fs.writeFileSync(path, template)
 console.log(`Created migration at: ${chalk.green(path)}`)
