@@ -14,6 +14,8 @@ Database connection where migrations will be executed and saved.
 A folder path where migrations will be saved.If this variable is not specified it will create a `migrations` folder in the
 root path of the project.
 
+Additionally, you might opt to use a .env file to set these variables.
+
 ## commands
 
 `yarn migrate create <<migration-name>>`
