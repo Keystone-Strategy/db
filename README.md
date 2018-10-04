@@ -1,5 +1,5 @@
 # migrate
-NPM package for automated Mongoose migrations. 
+NPM package for the creation and execution of mongoDB migrations. 
 Provide commands for the creation and execution of migrations scripts. 
 
 ## Configuration
