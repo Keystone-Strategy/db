@@ -3,18 +3,26 @@ NPM package for the creation and execution of mongoDB migrations.
 Provide commands for the creation and execution of migrations scripts. 
 
 ## Configuration
-Configurations are set through enviroment variables.
+
+### Environment variables.
 
 `MONGODB_URI`
 
-Database connection where migrations will be executed and saved.
+Database connection where migrations will be executed. you might opt to use a .env file to set this variable.
 
-`SERVER_MIGRATION_PATH`
+### Migrations folder.
 
-A folder path where migrations will be saved.If this variable is not specified it will create a `migrations` folder in the
+```
+// package.json
+{
+...
+  mongo-migrate: { migrationsPath: './path/where/migration/will/save' }
+...
+}
+```
+
+A folder path where migrations will be saved. If this is not specified it will create a `migrations` folder in the
 root path of the project.
-
-Additionally, you might opt to use a .env file to set these variables.
 
 ## commands
 
