@@ -1,6 +1,6 @@
 # migrate
-NPM package for the creation and execution of mongoDB migrations. 
-Provide commands for the creation and execution of migrations scripts. 
+NPM package for the creation and execution of MongoDB migrations. 
+Provides commands for the creation and execution of MongoDB migration scripts.
 
 ## Configuration
 
