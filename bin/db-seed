@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
 const path = require("path");
+const jsonfile = require("jsonfile");
 const mongoose = require("mongoose");
 
 const run = async () => {
-  const packageJson = require(path.join(process.cwd(), "package.json"));
-  const seed = require(path.join(process.cwd(), packageJson.db.seedPath));
+  const {
+    db: { seedPath }
+  } = jsonfile.readFileSync(path.join(process.cwd(), "package.json"));
+  if (!seedPath) throw missingSeedPathError();
+  const seed = require(path.join(process.cwd(), seedPath));
   if (!process.env.MONGODB_URI) throw missingMongoDbUriError();
   mongoose.connect(
     process.env.MONGODB_URI,
@@ -19,6 +23,8 @@ const missingMongoDbUriError = () =>
   new Error(
     "No `MONGODB_URI` environment variable found. Please specify the mongo connection string in the `MONGODB_URI` environment variable."
   );
+
+const missingSeedPathError = () => new Error("No seed path specified. Please specify a path relative to your root directory that contains your seed file.");
 
 run()
   .then(() => {
