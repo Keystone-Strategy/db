@@ -7,7 +7,7 @@ const MongodbMemoryServer = require('mongodb-memory-server').default
 const Todo = require('../mocks/todo.model')
 const { Migration, serverMigrationPath } = require('..')
 
-describe('bin/migrate', function () {
+describe('bin/db', function () {
   let mongod
   let MONGODB_URI
   beforeAll(async () => {
@@ -45,7 +45,7 @@ describe('bin/migrate', function () {
 
     it('returns an error if no name is specified', function () {
       expect(
-        () => childProcess.execSync(`bin/migrate create`)
+        () => childProcess.execSync(`bin/db create-migration`)
       ).toThrowError('Please specify a migration name.')
     })
   })
@@ -119,7 +119,7 @@ describe('bin/migrate', function () {
     })
 
     it("doesn't run when no pending migrations exist", function () {
-      const result = execSync('bin/migrate run')
+      const result = execSync('bin/db run')
 
       expect(result).toContain('No pending migrations to run.')
       expect(result).not.toContain('Running migrations:')
@@ -132,7 +132,7 @@ describe('bin/migrate', function () {
         }
       })
 
-      expect(() => execSync('bin/migrate run')).toThrowError()
+      expect(() => execSync('bin/db run')).toThrowError()
       await expect(Migration.countDocuments()).resolves.toBe(0)
     })
   })
@@ -166,7 +166,7 @@ describe('bin/migrate', function () {
     it("displays an error when there aren't any migrations to rerun", async () => {
       await Migration.deleteMany()
       expect(
-        () => execSync('bin/migrate rerun')
+        () => executeRerunMigrations()
       ).toThrowError('Error: Cannot rerun migration. No migrations have been run.')
     })
   })
@@ -194,11 +194,11 @@ const buildTodoRequire = () => {
   return 'const Todo = require("../mocks/todo.model")'
 }
 
-const executeCreateMigration = migrationName => execSync(`bin/migrate create ${migrationName}`)
+const executeCreateMigration = migrationName => execSync(`bin/db create-migration ${migrationName}`)
 
-const executeRunMigrations = () => execSync('bin/migrate run')
+const executeRunMigrations = () => execSync('bin/db run-migrations')
 
-const executeRerunMigrations = () => execSync('bin/migrate rerun')
+const executeRerunMigrations = () => execSync('bin/db rerun-migrations')
 
 const createTodo = (name = 'initialName') => {
   const todo = new Todo({ name })
