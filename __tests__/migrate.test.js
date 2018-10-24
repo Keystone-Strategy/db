@@ -1,37 +1,13 @@
 const _ = require('lodash')
 const fs = require('fs')
-const mongoose = require('mongoose')
-const childProcess = require('child_process')
+const path = require('path')
 const moment = require('moment')
-const MongodbMemoryServer = require('mongodb-memory-server').default
-const Todo = require('../mocks/todo.model')
+
+const Todo = require('./support/models/todo')
 const { Migration, serverMigrationPath } = require('..')
+const { execSync } = require('./support/utils')
 
 describe('bin/db', function () {
-  let mongod
-  let MONGODB_URI
-  beforeAll(async () => {
-    mongod = new MongodbMemoryServer()
-    MONGODB_URI = await mongod.getConnectionString()
-    console.log(MONGODB_URI)
-    return mongoose.connect(MONGODB_URI,  { useNewUrlParser: true })
-  })
-
-  beforeEach(() => {
-    process.env.MONGODB_URI = MONGODB_URI
-    execSync(`mkdir -p ${serverMigrationPath()}`)
-  })
-
-  afterEach(async () => {
-    deleteMigrationsDirectory()
-    await Promise.all([Todo.deleteMany(), Migration.deleteMany()])
-  })
-
-  afterAll(() => {
-    mongod.stop()
-    delete process.env.MONGODB_URI
-  })
-
   describe('create', function () {
     it('creates a file with the provided name and unix timestamp', function () {
       const migrationName = 'some-migration'
@@ -45,7 +21,7 @@ describe('bin/db', function () {
 
     it('returns an error if no name is specified', function () {
       expect(
-        () => childProcess.execSync(`bin/db create-migration`)
+        () => execSync(`bin/db create-migration`)
       ).toThrowError('Please specify a migration name.')
     })
   })
@@ -175,7 +151,7 @@ describe('bin/db', function () {
 const createMigration = (args = {}) => {
   const { up, dependencies = [] } = args
   const migrationName = buildMigrationName()
-  const template = fs.readFileSync('./mocks/test-template')
+  const template = fs.readFileSync(path.join(__dirname, 'support', 'test-template'))
   const compile = _.template(template)
   fs.writeFileSync(migrationName, compile({ up, dependencies }))
 }
@@ -186,12 +162,8 @@ const buildMigrationName = () => {
   return `${serverMigrationPath()}/${unixTimeStamp}-${migrationName}.js`
 }
 
-const deleteMigrationsDirectory = () => {
-  return execSync(`rm -rf ${serverMigrationPath()}`)
-}
-
 const buildTodoRequire = () => {
-  return 'const Todo = require("../mocks/todo.model")'
+  return `const Todo = require("${path.join(__dirname, 'support', 'models', 'todo')}")`
 }
 
 const executeCreateMigration = migrationName => execSync(`bin/db create-migration ${migrationName}`)
@@ -203,9 +175,4 @@ const executeRerunMigrations = () => execSync('bin/db rerun-migrations')
 const createTodo = (name = 'initialName') => {
   const todo = new Todo({ name })
   return todo.save()
-}
-
-const execSync = command => {
-  const options = { env: process.env, encoding: 'utf-8' }
-  return childProcess.execSync(command, options)
 }
