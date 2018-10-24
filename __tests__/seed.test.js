@@ -1,18 +1,12 @@
-const mongoose = require("mongoose");
-const path = require("path");
-
 const Todo = require("./support/models/todo");
-const { seed } = require("../index");
+const { execSync } = require('./support/utils')
 
 beforeEach(async () => {
   await Todo.deleteMany({});
 });
 
 test("seeding a database", async () => {
-  await seed({
-    path: path.join(__dirname, "support", "seed"),
-    connection: mongoose.connection
-  });
+  execSync('bin/db seed')
 
   const results = await Todo.find();
   expect(results).toHaveLength(1);

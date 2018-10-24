@@ -11,4 +11,5 @@ commander
   .command('create-migration <name>', 'Create a migration')
   .command('run-migrations', 'Run migrations', { isDefault: true })
   .command('rerun-migrations', 'Rerun the last migration')
+  .command('seed', 'Seed the database')
   .parse(process.argv)
