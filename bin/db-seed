@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const run = async () => {
   const packageJson = require(path.join(process.cwd(), "package.json"));
   const seed = require(path.join(process.cwd(), packageJson.db.seedPath));
+  if (!process.env.MONGODB_URI) throw missingMongoDbUriError();
   mongoose.connect(
     process.env.MONGODB_URI,
     { useNewUrlParser: true }
@@ -13,6 +14,11 @@ const run = async () => {
   await mongoose.connection.dropDatabase();
   return seed();
 };
+
+const missingMongoDbUriError = () =>
+  new Error(
+    "No `MONGODB_URI` environment variable found. Please specify the mongo connection string in the `MONGODB_URI` environment variable."
+  );
 
 run()
   .then(() => {
