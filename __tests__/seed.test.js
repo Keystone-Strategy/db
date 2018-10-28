@@ -36,6 +36,18 @@ test("seeding the database with a missing seed path", async () => {
   );
 });
 
+test("seeding the database with a wrong seed path", async () => {
+  const packageJsonPath = path.resolve(__dirname, "../", "package.json");
+  const nonExistentPath = "foobar";
+  readJsonFile(packageJsonPath).edit(updateSeedPath(nonExistentPath));
+
+  expect(() => {
+    execSync("bin/db seed");
+  }).toThrowError(
+    `No file found for path ${nonExistentPath}. Please specify a path relative to your root directory that contains your seed file.`
+  );
+});
+
 const updateSeedPath = _.curry((seedPath, packageJson) => ({
   ...packageJson,
   db: { ...packageJson.db, seedPath }

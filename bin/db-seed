@@ -3,12 +3,14 @@
 const path = require("path");
 const jsonfile = require("jsonfile");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 const run = async () => {
   const {
     db: { seedPath }
   } = jsonfile.readFileSync(path.join(process.cwd(), "package.json"));
   if (!seedPath) throw missingSeedPathError();
+  if (!fs.existsSync(seedPath)) throw nonExistentFileError(seedPath);
   const seed = require(path.join(process.cwd(), seedPath));
   if (!process.env.MONGODB_URI) throw missingMongoDbUriError();
   mongoose.connect(
@@ -24,7 +26,15 @@ const missingMongoDbUriError = () =>
     "No `MONGODB_URI` environment variable found. Please specify the mongo connection string in the `MONGODB_URI` environment variable."
   );
 
-const missingSeedPathError = () => new Error("No seed path specified. Please specify a path relative to your root directory that contains your seed file.");
+const missingSeedPathError = () =>
+  new Error(
+    "No seed path specified. Please specify a path relative to your root directory that contains your seed file."
+  );
+
+const nonExistentFileError = path =>
+  new Error(
+    `No file found for path ${path}. Please specify a path relative to your root directory that contains your seed file.`
+  );
 
 run()
   .then(() => {
