@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const commander = require('commander')
+
+require('dotenv').config()
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+
+commander
+  .version('0.1.0')
+  .command('create-migration <name>', 'Create a migration')
+  .command('run-migrations', 'Run migrations', { isDefault: true })
+  .command('rerun-migrations', 'Rerun the last migration')
+  .command('seed', 'Seed the database')
+  .parse(process.argv)
