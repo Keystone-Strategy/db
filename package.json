@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-labs/mongo-migrate",
+  "name": "@keystone-labs/db",
   "version": "1.0.1",
   "description": "Library to create and run migration scripts for Mongo DBs",
   "main": "index.js",
