@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const Migration = require("./migration.model");
-const config = require(`${process.cwd()}/package.json`)["mongo-migrate"] || {};
+const config = require(`${process.cwd()}/package.json`).db || {};
 
 const serverMigrationPath = () =>
   path.resolve(config.migrationsPath || "./migrations");

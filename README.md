@@ -1,6 +1,7 @@
-# migrate
-NPM package for the creation and execution of MongoDB migrations. 
-Provides commands for the creation and execution of MongoDB migration scripts.
+# db
+NPM package to perform common DB operations via Mongoose. Operations include:
+- Creating and running migrations.
+- Seeding a database.
 
 ## Configuration
 
@@ -16,7 +17,7 @@ Database connection where migrations will be executed. you might opt to use a .e
 // package.json
 {
 ...
-  mongo-migrate: { migrationsPath: './path/where/migration/will/save' }
+  db: { migrationsPath: './path/where/migration/will/save' }
 ...
 }
 ```
@@ -26,14 +27,18 @@ root path of the project.
 
 ## commands
 
-`yarn migrate create <<migration-name>>`
+`yarn create-migration <<migration-name>>`
 
 Create a new migration file in the folder specified by `SERVER_MIGRATION_PATH`. it requires a `<<migration-name>>`.
 
-`yarn run`
+`yarn run-migrations`
 
 Execute pending migrations (migrations that are not been run in the database). 
 
-`yarn rerurn`
+`yarn rerurn-migrations`
 
 Execute the last migration that was run.
+
+`yarn seed`
+
+Seed the database. Looks for the path to the seed file in the package.json at `db.seedPath`.
