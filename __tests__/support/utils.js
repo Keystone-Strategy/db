@@ -1,4 +1,4 @@
-const childProcess = require('child_process')
+const childProcess = require("child_process");
 const jsonfile = require("jsonfile");
 const _ = require("lodash");
 
@@ -28,6 +28,6 @@ const readJsonFile = path => {
 };
 
 module.exports = {
-    execSync,
-    readJsonFile
-}
+  execSync,
+  readJsonFile
+};

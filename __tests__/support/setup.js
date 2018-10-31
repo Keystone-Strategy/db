@@ -1,10 +1,10 @@
-const MongodbMemoryServer = require('mongodb-memory-server').default
-const mongoose = require('mongoose')
+const MongodbMemoryServer = require("mongodb-memory-server").default;
+const mongoose = require("mongoose");
 
-const { execSync } = require('./utils')
-const { serverMigrationPath } = require('../..')
-const Todo = require('./models/todo')
-const Migration = require('../../migration.model')
+const { execSync } = require("./utils");
+const { serverMigrationPath } = require("../..");
+const Todo = require("./models/todo");
+const Migration = require("../../migration.model");
 
 let mongod;
 let MONGODB_URI;
@@ -30,5 +30,5 @@ afterAll(() => {
 });
 
 const deleteMigrationsDirectory = () => {
-  return execSync(`rm -rf ${serverMigrationPath()}`)
-}
+  return execSync(`rm -rf ${serverMigrationPath()}`);
+};
