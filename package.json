@@ -4,7 +4,7 @@
   "description": "Library to create and run migration scripts for Mongo DBs",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "xo && jest",
     "release": "np"
   },
   "bin": {
@@ -40,7 +40,8 @@
     "jest": "^23.6.0",
     "lint-staged": "^8.0.4",
     "mongodb-memory-server": "^2.4.2",
-    "np": "^3.0.4"
+    "np": "^3.0.4",
+    "xo": "^0.23.0"
   },
   "db": {
     "seedPath": "__tests__/support/seed"
@@ -52,8 +53,14 @@
   },
   "lint-staged": {
     "*.{js,json,css,md}": [
-      "prettier --write",
+      "xo --fix",
       "git add"
+    ]
+  },
+  "xo": {
+    "prettier": true,
+    "envs": [
+      "jest"
     ]
   }
 }
