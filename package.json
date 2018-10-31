@@ -8,7 +8,7 @@
     "release": "np"
   },
   "bin": {
-    "migrate": "./bin/migrate"
+    "db": "./bin/db"
   },
   "repository": {
     "type": "git",
