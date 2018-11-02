@@ -101,7 +101,7 @@ describe('bin/db', () => {
 		});
 
 		it("doesn't run when no pending migrations exist", () => {
-			const result = execSync('bin/db run');
+			const result = execSync('bin/db run-migrations');
 
 			expect(result).toContain('No pending migrations to run.');
 			expect(result).not.toContain('Running migrations:');
@@ -114,7 +114,7 @@ describe('bin/db', () => {
 				}
 			});
 
-			expect(() => execSync('bin/db run')).toThrowError();
+			expect(() => execSync('bin/db run-migrations')).toThrowError();
 			await expect(Migration.countDocuments()).resolves.toBe(0);
 		});
 	});

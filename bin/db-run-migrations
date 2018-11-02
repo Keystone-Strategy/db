@@ -40,6 +40,7 @@ const runMigration = async migrationName => {
 }
 
 const fetchPendingMigrations = (migrationNames) => {
+  if (!fs.existsSync(serverMigrationPath())) return []
   const migrationFileNames = fs.readdirSync(serverMigrationPath())
   return _.reject(migrationFileNames, name => _.includes(migrationNames, name))
 }
