@@ -48,6 +48,20 @@ test('seeding the database with a wrong seed path', () => {
 	);
 });
 
+test('seeding the database with a missing seed path', () => {
+	const packageJsonPath = path.resolve(__dirname, '../', 'package.json');
+	readJsonFile(packageJsonPath).edit(packageJson => ({
+		...packageJson,
+		db: null
+	}));
+
+	expect(() => {
+		execSync('bin/db seed');
+	}).toThrowError(
+		'No configuration specified. Please specify add a `db` property to your package.json.'
+	);
+});
+
 const updateSeedPath = _.curry((seedPath, packageJson) => ({
 	...packageJson,
 	db: {...packageJson.db, seedPath}
