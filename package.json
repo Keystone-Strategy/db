@@ -1,7 +1,7 @@
 {
   "name": "@keystone-labs/db",
   "version": "2.0.0",
-  "description": "Library to create and run migration scripts for Mongo DBs",
+  "description": "NPM package for db operations through Mongoose.",
   "main": "index.js",
   "scripts": {
     "test": "xo && jest",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Keystone-Strategy/migrate.git"
+    "url": "git+https://github.com/Keystone-Strategy/db.git"
   },
   "keywords": [
     "migrate",
@@ -22,9 +22,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Keystone-Strategy/migrate/issues"
+    "url": "https://github.com/Keystone-Strategy/db/issues"
   },
-  "homepage": "https://github.com/Keystone-Strategy/migrate#readme",
+  "homepage": "https://github.com/Keystone-Strategy/db#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
