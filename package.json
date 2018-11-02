@@ -1,10 +1,10 @@
 {
   "name": "@keystone-labs/db",
   "version": "2.0.0",
-  "description": "Library to create and run migration scripts for Mongo DBs",
+  "description": "NPM package for db operations through Mongoose.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "xo && jest",
     "release": "np"
   },
   "bin": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Keystone-Strategy/migrate.git"
+    "url": "git+https://github.com/Keystone-Strategy/db.git"
   },
   "keywords": [
     "migrate",
@@ -22,9 +22,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Keystone-Strategy/migrate/issues"
+    "url": "https://github.com/Keystone-Strategy/db/issues"
   },
-  "homepage": "https://github.com/Keystone-Strategy/migrate#readme",
+  "homepage": "https://github.com/Keystone-Strategy/db#readme",
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
@@ -32,14 +32,35 @@
     "jsonfile": "^5.0.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
-    "mongoose": "^5.3.0"
+    "mongoose": "^5.3.0",
+    "prettier": "^1.14.3"
   },
   "devDependencies": {
+    "husky": "^1.1.2",
     "jest": "^23.6.0",
+    "lint-staged": "^8.0.4",
     "mongodb-memory-server": "^2.4.2",
-    "np": "^3.0.4"
+    "np": "^3.0.4",
+    "xo": "^0.23.0"
   },
   "db": {
     "seedPath": "__tests__/support/seed"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "xo --fix",
+      "git add"
+    ]
+  },
+  "xo": {
+    "prettier": true,
+    "envs": [
+      "jest"
+    ]
   }
 }
