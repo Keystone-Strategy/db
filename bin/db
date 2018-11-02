@@ -1,15 +1,20 @@
 #!/usr/bin/env node
+const jsonfile = require("jsonfile");
+const path = require("path");
+const commander = require("commander");
 
-const commander = require('commander')
-
-require('dotenv').config()
-
-process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+const packageJson = jsonfile.readFileSync(
+  path.join(process.cwd(), "package.json")
+);
+if (!packageJson.db)
+  throw new Error(
+    "No configuration specified. Please specify add a `db` property to your package.json."
+  );
 
 commander
-  .version('0.1.0')
-  .command('create-migration <name>', 'Create a migration')
-  .command('run-migrations', 'Run migrations', { isDefault: true })
-  .command('rerun-migrations', 'Rerun the last migration')
-  .command('seed', 'Seed the database')
-  .parse(process.argv)
+  .version("0.1.0")
+  .command("create-migration <name>", "Create a migration")
+  .command("run-migrations", "Run migrations", { isDefault: true })
+  .command("rerun-migrations", "Rerun the last migration")
+  .command("seed", "Seed the database")
+  .parse(process.argv);
