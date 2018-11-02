@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const Migration = require('./migration.model');
 
 const config = require(`${process.cwd()}/package.json`).db || {};
@@ -11,7 +12,7 @@ const serverMigrationPath = () =>
 
 const createMigrationsDirectory = () => {
 	if (!fs.existsSync(serverMigrationPath())) {
-		fs.mkdirSync(serverMigrationPath());
+		mkdirp.sync(serverMigrationPath());
 	}
 };
 
