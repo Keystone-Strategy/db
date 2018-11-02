@@ -1,6 +1,6 @@
 {
   "name": "@keystone-labs/db",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "NPM package for db operations through Mongoose.",
   "main": "index.js",
   "scripts": {
