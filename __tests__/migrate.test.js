@@ -51,6 +51,7 @@ describe('bin/db', () => {
 				dependencies: [buildTodoRequire()],
 				async up() {
 					const todo = await Todo.findOne();
+					console.log(todo);
 					await Todo.updateOne(
 						{_id: todo._id},
 						{$set: {name: 'first migration'}}
