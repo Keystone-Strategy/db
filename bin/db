@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const jsonfile = require("jsonfile");
 const path = require("path");
 const commander = require("commander");
